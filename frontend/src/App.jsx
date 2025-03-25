@@ -1,11 +1,10 @@
 import React from "react";
+import RubikTimer from "./components/RubikTimer";
 
 const App = () => {
   return (
-    <div>
-      <div className="Container bg-red-500">
-        <h1>Hello tailwindCSSv4.0</h1>
-      </div>
+    <div className="min-h-screen bg-black text-white">
+      <RubikTimer />
     </div>
   );
 };
