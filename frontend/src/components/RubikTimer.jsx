@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import EventSelector from "./EventSelector";
 import ScrambleViewer from "./ScrambleViewer";
@@ -33,22 +34,21 @@ const RubikTimer = () => {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [holdState, setHoldState] = useState("idle");
-  const [solveHistory, setSolveHistory] = useState([]);
+
+  const [solveHistory, setSolveHistory] = useState(() => {
+    return JSON.parse(localStorage.getItem("rubikTimer-solveHistory") || "[]");
+  });
 
   const timerRef = useRef(null);
   const spaceHeldRef = useRef(false);
   const holdStartRef = useRef(null);
   const isReadyRef = useRef(false);
 
-  // Load history on mount
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("solveHistory") || "[]");
-    setSolveHistory(stored);
-  }, []);
-
-  // Save on update
-  useEffect(() => {
-    localStorage.setItem("solveHistory", JSON.stringify(solveHistory));
+    localStorage.setItem(
+      "rubikTimer-solveHistory",
+      JSON.stringify(solveHistory)
+    );
   }, [solveHistory]);
 
   const generateScramble = useCallback(async () => {
@@ -84,7 +84,6 @@ const RubikTimer = () => {
     generateScramble();
   }, [time, scramble, selectedEvent, generateScramble]);
 
-  // Keyboard controls
   useEffect(() => {
     let holdTimeout;
 
@@ -104,7 +103,7 @@ const RubikTimer = () => {
         holdTimeout = setTimeout(() => {
           setHoldState("ready");
           isReadyRef.current = true;
-        }, 800);
+        }, 500);
 
         holdStartRef.current = Date.now();
       }

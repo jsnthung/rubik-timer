@@ -6,6 +6,7 @@ const ScrambleViewer = ({ scramble, puzzle }) => {
       <h4 className="text-white text-lg font-medium mb-2">{scramble}</h4>
       <div className="flex justify-center">
         <twisty-player
+          //   visualization="2D"
           background="none"
           control-panel="none"
           puzzle={puzzle}
