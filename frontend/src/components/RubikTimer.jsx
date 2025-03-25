@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import EventSelector from "./EventSelector";
 import ScrambleViewer from "./ScrambleViewer";
