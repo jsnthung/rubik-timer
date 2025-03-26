@@ -20,8 +20,8 @@ const TimerDisplay = ({ time, holdState }) => {
         {formatTime(time)}
       </div>
       <p className="text-gray-400 mt-2">
-        Hold <span className="font-semibold">spacebar</span> for 2s to start.
-        Press any key to stop.
+        Hold <span className="font-semibold">spacebar</span> until stopwatch
+        turns green. Press any key to stop.
       </p>
     </div>
   );

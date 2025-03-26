@@ -38,7 +38,7 @@ const SolveHistoryItem = ({
 
   return (
     <li key={index} className="border-b border-gray-700 pb-3 flex gap-3">
-      <div className="text-gray-500 text-sm">{index + 1}.</div>
+      <div className="text-gray-500 text-sm">{reverseIndex + 1}.</div>
       <div className="flex-1">
         <div className="text-white font-medium">{display()}</div>
         <div className="text-xs text-gray-400 italic">

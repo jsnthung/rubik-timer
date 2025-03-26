@@ -37,7 +37,7 @@ export const sendWelcomeEmail = async (email, name) => {
       to: recipient,
       template_uuid: "856fd5fa-bed6-4aad-8c33-ee1e5c49e6b4",
       template_variables: {
-        company_info_name: "Auth Project",
+        company_info_name: "Rubik Timer",
         name: name,
       },
     });
