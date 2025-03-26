@@ -78,6 +78,7 @@ const RubikTimer = () => {
         scramble,
         event: wcaEvents[selectedEvent].eventName,
         timestamp: new Date().toISOString(),
+        note: "",
       },
     ]);
     generateScramble();
@@ -139,6 +140,14 @@ const RubikTimer = () => {
     });
   };
 
+  const updateSolveNote = (index, newNote) => {
+    setSolveHistory((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], note: newNote };
+      return updated;
+    });
+  };
+
   const deleteSolve = (index) => {
     setSolveHistory((prev) => {
       const updated = [...prev];
@@ -172,6 +181,7 @@ const RubikTimer = () => {
         solves={solveHistory}
         onPenaltyChange={updateSolvePenalty}
         onDelete={deleteSolve}
+        onNoteChange={updateSolveNote}
       />
     </div>
   );
