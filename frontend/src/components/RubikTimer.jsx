@@ -39,6 +39,8 @@ const RubikTimer = () => {
   });
 
   const timerRef = useRef(null);
+  const startTimestampRef = useRef(null);
+  const updateTimerRef = useRef(null);
   const spaceHeldRef = useRef(false);
   const holdStartRef = useRef(null);
   const isReadyRef = useRef(false);
@@ -59,16 +61,26 @@ const RubikTimer = () => {
     generateScramble();
   }, [generateScramble]);
 
+  useEffect(() => {
+    updateTimerRef.current = (now) => {
+      const elapsed = now - startTimestampRef.current;
+      setTime(elapsed);
+      timerRef.current = requestAnimationFrame(updateTimerRef.current);
+    };
+  }, []);
+
   const startTimer = useCallback(() => {
     setIsRunning(true);
     setTime(0);
-    timerRef.current = setInterval(() => {
-      setTime((prev) => prev + 10);
-    }, 10);
+
+    timerRef.current = requestAnimationFrame((now) => {
+      startTimestampRef.current = now;
+      updateTimerRef.current(now);
+    });
   }, []);
 
   const stopTimer = useCallback(() => {
-    clearInterval(timerRef.current);
+    cancelAnimationFrame(timerRef.current);
     setIsRunning(false);
     setSolveHistory((prev) => [
       ...prev,
