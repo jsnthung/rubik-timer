@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { useAuthStore } from "./store/authStore";
+
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
-import LoadingSpinner from "./components/LoadingSpinner";
-import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./store/authStore";
 import HomeNoAuthPage from "./pages/HomeNoAuthPage";
 import HomeWithAuthPage from "./pages/HomeWithAuthPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -36,8 +39,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 };
 
 const App = () => {
-  // eslint-disable-next-line no-unused-vars
-  const { isCheckingAuth, checkAuth, isAuthenticated, user } = useAuthStore();
+  const { isCheckingAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -74,6 +76,22 @@ const App = () => {
           }
         />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectAuthenticatedUser>
+              <ForgotPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <RedirectAuthenticatedUser>
+              <ResetPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
       </Routes>
       <Toaster />
     </div>
