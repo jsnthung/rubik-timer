@@ -75,12 +75,17 @@ export const useAuthStore = create((set) => ({
         email,
         password,
       });
-      set({
-        isAuthenticated: true,
-        user: response.data.user,
-        error: null,
-        isLoading: false,
-      });
+
+      const user = response.data.user;
+
+      if (!user.isVerified) {
+        set({ isLoading: false });
+        return { needsVerification: true, user };
+      }
+
+      set({ isAuthenticated: true, user, error: null, isLoading: false });
+
+      return { needsVerification: false, user };
     } catch (error) {
       set({
         error: error.response?.data?.message || "Error logging in",

@@ -1,20 +1,32 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Mail, Lock, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
 import Input from "../components/Input";
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const { login, isLoading, error } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    try {
+      const result = await login(email, password);
+      if (result.needsVerification) {
+        navigate("/verify-email", { state: { email } });
+      } else {
+        navigate("/");
+      }
+      // eslint-disable-next-line no-unused-vars, no-empty
+    } catch (error) {}
+
     await login(email, password);
   };
 
@@ -56,6 +68,7 @@ const LoginPage = () => {
                 Forgot password?
               </Link>
             </div>
+
             {error && (
               <p className="text-red-500 font-semibold mb-2">{error}</p>
             )}
