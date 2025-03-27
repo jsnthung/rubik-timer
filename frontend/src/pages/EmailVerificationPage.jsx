@@ -80,7 +80,6 @@ const EmailVerificationPage = () => {
     }
   };
 
-  // Start resend timer countdown
   useEffect(() => {
     if (isResendDisabled) {
       const interval = setInterval(() => {
@@ -97,7 +96,6 @@ const EmailVerificationPage = () => {
     }
   }, [isResendDisabled]);
 
-  // Auto submit when all fields are filled
   useEffect(() => {
     if (code.every((digit) => digit !== "")) {
       handleSubmit(new Event("submit"));
