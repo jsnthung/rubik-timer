@@ -4,6 +4,7 @@ import {
   logout,
   signup,
   verifyEmail,
+  resendVerification,
   forgotPassword,
   resetPassword,
   checkAuth,
@@ -20,6 +21,7 @@ router.get("/check-auth", verifyToken, checkAuth);
 
 router.post("/signup", signup);
 router.post("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerification);
 
 router.post("/login", login);
 router.post("/logout", logout);

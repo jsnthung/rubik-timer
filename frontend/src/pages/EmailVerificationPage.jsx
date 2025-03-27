@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useAuthStore } from "../store/authStore";
@@ -7,10 +7,16 @@ import toast from "react-hot-toast";
 
 const EmailVerificationPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [resendTimer, setResendTimer] = useState(60);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
+
   const inputRefs = useRef([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const hasShownToast = useRef(false);
 
-  const { error, isLoading, verifyEmail } = useAuthStore();
+  const { user, error, isLoading, verifyEmail, resendVerificationEmail } =
+    useAuthStore();
 
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) {
@@ -30,7 +36,6 @@ const EmailVerificationPage = () => {
   const handlePaste = (e) => {
     e.preventDefault();
     const paste = e.clipboardData.getData("text").trim();
-
     const digitsOnly = paste.replace(/\D/g, "").slice(0, 6);
 
     const newCode = Array(6).fill("");
@@ -63,6 +68,35 @@ const EmailVerificationPage = () => {
     }
   };
 
+  const handleResend = async () => {
+    try {
+      await resendVerificationEmail(user?.email);
+      toast.success("Verification code resent!");
+      setIsResendDisabled(true);
+      setResendTimer(60);
+      // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      toast.error("Failed to resend code.");
+    }
+  };
+
+  // Start resend timer countdown
+  useEffect(() => {
+    if (isResendDisabled) {
+      const interval = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setIsResendDisabled(false);
+            return 60;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isResendDisabled]);
+
   // Auto submit when all fields are filled
   useEffect(() => {
     if (code.every((digit) => digit !== "")) {
@@ -70,6 +104,15 @@ const EmailVerificationPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
+
+  useEffect(() => {
+    if (location.state?.email && !hasShownToast.current) {
+      toast.success("A new verification code has been sent to your email.");
+      hasShownToast.current = true; // mark as shown
+      navigate(location.pathname, { replace: true }); // clear state
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -90,28 +133,6 @@ const EmailVerificationPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex justify-between">
               {code.map((digit, index) => (
-                // <input
-                //   key={index}
-                //   ref={(el) => (inputRefs.current[index] = el)}
-                //   type="text"
-                //   maxLength="6"
-                //   value={digit}
-                //   onChange={(e) => handleChange(index, e.target.value)}
-                //   onKeyDown={(e) => handleKeyDown(index, e)}
-                //   className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none"
-                // />
-
-                // <input
-                //   key={index}
-                //   ref={(el) => (inputRefs.current[index] = el)}
-                //   type="text"
-                //   maxLength="1" // changed from 6 to 1
-                //   value={digit}
-                //   onChange={(e) => handleChange(index, e.target.value)}
-                //   onKeyDown={(e) => handleKeyDown(index, e)}
-                //   className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none"
-                // />
-
                 <input
                   key={index}
                   ref={(el) => (inputRefs.current[index] = el)}
@@ -120,14 +141,16 @@ const EmailVerificationPage = () => {
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={handlePaste} // ✅ now attached to all inputs
+                  onPaste={handlePaste}
                   className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none"
                 />
               ))}
             </div>
 
             {error && (
-              <p className="text-red-500 font-semibold mt-2">{error}</p>
+              <p className="text-red-500 font-semibold mt-2 text-center">
+                {error}
+              </p>
             )}
 
             <motion.button
@@ -139,6 +162,25 @@ const EmailVerificationPage = () => {
             >
               {isLoading ? "Verifying..." : "Verify Email"}
             </motion.button>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-400">
+                Didn’t receive the code?
+                <button
+                  onClick={handleResend}
+                  disabled={isResendDisabled}
+                  className={`ml-2 font-semibold ${
+                    isResendDisabled
+                      ? "text-gray-500 cursor-not-allowed"
+                      : "text-green-400 hover:text-green-500"
+                  }`}
+                >
+                  {isResendDisabled
+                    ? `Resend in ${resendTimer}s`
+                    : "Resend Code"}
+                </button>
+              </p>
+            </div>
           </form>
         </motion.div>
       </div>

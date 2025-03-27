@@ -94,6 +94,39 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+export const resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user || user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request",
+      });
+    }
+
+    const newVerificationToken = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+    user.verificationToken = newVerificationToken;
+    user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+
+    await user.save();
+
+    // await sendVerificationEmail(user.email, newVerificationToken);
+
+    res.status(200).json({
+      success: true,
+      message: "Verification code resent",
+    });
+  } catch (error) {
+    console.error("Error in resendVerification: ", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
