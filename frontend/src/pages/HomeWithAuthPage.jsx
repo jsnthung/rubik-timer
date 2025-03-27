@@ -2,6 +2,7 @@ import React from "react";
 import { useAuthStore } from "../store/authStore";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import RubikTimer from "../components/RubikTimer";
 
 const HomeWithAuthPage = () => {
   const { user, logout } = useAuthStore();
@@ -30,6 +31,10 @@ const HomeWithAuthPage = () => {
         <p>Name: {user.name}</p>
         <p>Email: {user.email}</p>
       </div>
+
+      <main>
+        <RubikTimer />
+      </main>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import RubikTimer from "../components/RubikTimer";
 
 const HomeNoAuthPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,10 @@ const HomeNoAuthPage = () => {
           Sign Up
         </button>
       </header>
+
+      <main>
+        <RubikTimer />
+      </main>
     </div>
   );
 };
