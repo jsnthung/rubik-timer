@@ -25,11 +25,13 @@ const HomeWithAuthPage = () => {
           Logout
         </motion.button>
       </header>
+
       <div>
         <h3>Profile Information</h3>
         <p>Name: {user.name}</p>
         <p>Email: {user.email}</p>
       </div>
+
       <main>
         <RubikTimer />
       </main>
