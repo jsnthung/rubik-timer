@@ -1,5 +1,4 @@
 import React from "react";
-import RubikTimer from "../components/RubikTimer";
 import { useAuthStore } from "../store/authStore";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
@@ -27,14 +26,10 @@ const HomeWithAuthPage = () => {
       </header>
 
       <div>
-        <h3>Profile Information</h3>
+        <h3>Profile Informations</h3>
         <p>Name: {user.name}</p>
         <p>Email: {user.email}</p>
       </div>
-
-      <main>
-        <RubikTimer />
-      </main>
     </div>
   );
 };

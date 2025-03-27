@@ -92,6 +92,7 @@ const App = () => {
             </RedirectAuthenticatedUser>
           }
         />
+        <Route path="*" element={<Navigate to="/guest" replace />} />
       </Routes>
       <Toaster />
     </div>
