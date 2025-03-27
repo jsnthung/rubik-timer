@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
@@ -57,7 +56,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route path="/" element={<HomePage />} /> */}
         <Route path="/guest" element={<HomeNoAuthPage />} />
         <Route
           path="/signup"
