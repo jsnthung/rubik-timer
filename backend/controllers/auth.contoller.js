@@ -112,6 +112,26 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Invalid credentials" });
     }
 
+    if (!user.isVerified) {
+      const newVerificationToken = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      user.verificationToken = newVerificationToken;
+      user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+      await user.save();
+
+      // await sendVerificationEmail(user.email, user.verificationToken);
+
+      return res.status(200).json({
+        success: true,
+        message: "Please verify your email before logging in",
+        user: {
+          ...user._doc,
+          password: undefined,
+        },
+      });
+    }
+
     generateTokenAndSetCookie(res, user._id);
 
     user.lastLogin = new Date();
