@@ -2,7 +2,12 @@ import React from "react";
 import { useAuthStore } from "../store/authStore";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+
+// use this to build
 import RubikTimer from "../components/RubikTimer";
+
+// use this to use cubing.js
+// import RubikTimerWithScramble from "../components/RubikTimerWithScramble";
 
 const HomeWithAuthPage = () => {
   const { user, logout } = useAuthStore();
@@ -34,6 +39,7 @@ const HomeWithAuthPage = () => {
 
       <main>
         <RubikTimer />
+        {/* <RubikTimerWithScramble /> */}
       </main>
     </div>
   );

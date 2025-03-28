@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import EventSelector from "./EventSelector";
+import ScrambleViewer from "./ScrambleViewer";
 import TimerDisplay from "./TimerDisplay";
 import SolveStats from "./SolveStats";
 import SolveHistory from "./SolveHistory";
+import { randomScrambleForEvent } from "cubing/scramble";
+import "cubing/twisty";
 
 const wcaEvents = {
   333: { puzzleID: "3x3x3", eventName: "3x3x3 Cube" },
@@ -24,8 +27,9 @@ const wcaEvents = {
   "333mbf": { puzzleID: "3x3x3", eventName: "3x3x3 Multi-Blind" },
 };
 
-const RubikTimer = () => {
+const RubikTimerWithScramble = () => {
   const [selectedEvent, setSelectedEvent] = useState("333");
+  const [scramble, setScramble] = useState("");
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [holdState, setHoldState] = useState("idle");
@@ -47,6 +51,15 @@ const RubikTimer = () => {
       JSON.stringify(solveHistory)
     );
   }, [solveHistory]);
+
+  const generateScramble = useCallback(async () => {
+    const newScramble = await randomScrambleForEvent(selectedEvent);
+    setScramble(newScramble.toString());
+  }, [selectedEvent]);
+
+  useEffect(() => {
+    generateScramble();
+  }, [generateScramble]);
 
   useEffect(() => {
     updateTimerRef.current = (now) => {
@@ -74,13 +87,14 @@ const RubikTimer = () => {
       {
         time,
         penalty: null,
-        scramble: "",
+        scramble,
         event: wcaEvents[selectedEvent].eventName,
         timestamp: new Date().toISOString(),
         note: "",
       },
     ]);
-  }, [time, selectedEvent]);
+    generateScramble();
+  }, [time, scramble, selectedEvent, generateScramble]);
 
   useEffect(() => {
     let holdTimeout;
@@ -162,7 +176,19 @@ const RubikTimer = () => {
         events={wcaEvents}
       />
 
+      <button
+        onClick={generateScramble}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-200"
+      >
+        Generate New Scramble
+      </button>
+
       <TimerDisplay time={time} holdState={holdState} />
+
+      <ScrambleViewer
+        scramble={scramble}
+        puzzle={wcaEvents[selectedEvent].puzzleID}
+      />
 
       <SolveStats solves={solveHistory} />
 
@@ -176,4 +202,4 @@ const RubikTimer = () => {
   );
 };
 
-export default RubikTimer;
+export default RubikTimerWithScramble;

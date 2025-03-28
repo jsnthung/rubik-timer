@@ -1,6 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+// use this to build
 import RubikTimer from "../components/RubikTimer";
+
+// use this to use cubing.js
+// import RubikTimerWithScramble from "../components/RubikTimerWithScramble";
 
 const HomeNoAuthPage = () => {
   const navigate = useNavigate();
@@ -24,6 +29,7 @@ const HomeNoAuthPage = () => {
 
       <main>
         <RubikTimer />
+        {/* <RubikTimerWithScramble /> */}
       </main>
     </div>
   );
