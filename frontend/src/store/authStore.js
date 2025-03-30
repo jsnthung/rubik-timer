@@ -8,6 +8,7 @@ export const useAuthStore = create((set) => ({
   isLoading: false,
   isCheckingAuth: true,
   message: null,
+  cameFromVerificationFlow: false,
 
   signup: async (email, password, name) => {
     set({ isLoading: true, error: null });
@@ -21,6 +22,7 @@ export const useAuthStore = create((set) => ({
         user: response.data.user,
         isAuthenticated: true,
         isLoading: false,
+        cameFromVerificationFlow: true,
       });
     } catch (error) {
       set({
@@ -39,6 +41,7 @@ export const useAuthStore = create((set) => ({
         user: response.data.user,
         isAuthenticated: true,
         isLoading: false,
+        cameFromVerificationFlow: false,
       });
       return response.data;
     } catch (error) {
@@ -78,7 +81,12 @@ export const useAuthStore = create((set) => ({
       });
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      set({ error: null, isCheckingAuth: false, isAuthenticated: false });
+      set({
+        error: null,
+        isCheckingAuth: false,
+        isAuthenticated: false,
+        cameFromVerificationFlow: false,
+      });
     }
   },
 
@@ -93,11 +101,23 @@ export const useAuthStore = create((set) => ({
       const user = response.data.user;
 
       if (!user.isVerified) {
-        set({ isLoading: false });
+        set({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          cameFromVerificationFlow: true,
+        });
+
         return { needsVerification: true, user };
       }
 
-      set({ isAuthenticated: true, user, error: null, isLoading: false });
+      set({
+        isAuthenticated: true,
+        user,
+        error: null,
+        isLoading: false,
+        cameFromVerificationFlow: false,
+      });
       return { needsVerification: false, user };
     } catch (error) {
       set({
@@ -117,6 +137,7 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: false,
         error: null,
         isLoading: false,
+        cameFromVerificationFlow: false,
       });
     } catch (error) {
       set({ error: "Error logging out", isLoading: false });

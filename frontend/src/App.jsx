@@ -36,6 +36,16 @@ const RedirectAuthenticatedUser = ({ children }) => {
   return children;
 };
 
+const RequireVerificationFlow = ({ children }) => {
+  const { isAuthenticated, user, cameFromVerificationFlow } = useAuthStore();
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.isVerified) return <Navigate to="/" replace />;
+  if (!cameFromVerificationFlow) return <Navigate to="/login" replace />;
+
+  return children;
+};
+
 const App = () => {
   const { isCheckingAuth, checkAuth } = useAuthStore();
 
@@ -73,7 +83,14 @@ const App = () => {
             </RedirectAuthenticatedUser>
           }
         />
-        <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route
+          path="/verify-email"
+          element={
+            <RequireVerificationFlow>
+              <EmailVerificationPage />
+            </RequireVerificationFlow>
+          }
+        />
         <Route
           path="/forgot-password"
           element={
