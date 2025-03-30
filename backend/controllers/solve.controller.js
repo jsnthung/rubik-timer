@@ -1,4 +1,3 @@
-// controllers/solve.controller.js
 import { Solve } from "../models/solve.model.js";
 
 export const addSolve = async (req, res) => {
@@ -6,7 +5,7 @@ export const addSolve = async (req, res) => {
     const { time, penalty, scramble, event, timestamp, note } = req.body;
 
     const solve = await Solve.create({
-      userId: req.userId, // from verifyToken middleware
+      userId: req.userId,
       time,
       penalty,
       scramble,

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import axios from "../utils/axiosInstance"; // centralized axios config
+import axios from "../utils/axiosInstance";
 
 export const useAuthStore = create((set) => ({
   user: null,

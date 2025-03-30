@@ -7,6 +7,6 @@ import topLevelAwait from "vite-plugin-top-level-await";
 export default defineConfig({
   plugins: [react(), tailwindcss(), wasm(), topLevelAwait()],
   optimizeDeps: {
-    exclude: ["cubing"], // Make sure it's not pre-bundled
+    exclude: ["cubing"],
   },
 });
